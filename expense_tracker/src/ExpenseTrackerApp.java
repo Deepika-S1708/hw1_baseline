@@ -1,153 +1,47 @@
-import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
-import java.awt.*;
-import java.util.ArrayList;
-import java.util.List;
 
-// Defined the ExpenseTrackerView class that extends JFrame
-public class ExpenseTrackerView extends JFrame {
+/**
+ * The ExpenseTrackerApp class allows users to add/remove daily transactions.
+ */
+public class ExpenseTrackerApp {
 
-  // Declared private instance variables
-  private JTable transactionsTable;
-  private JButton addTransactionBtn;
-  private JTextField amountField;
-  private JTextField categoryField;
-  private DefaultTableModel model;
-  private List<Transaction> transactions = new ArrayList<>();
+  /**
+   * Main function that been called when we excecute the code
+   * @param args default call of arguments
+   */
+  public static void main(String[] args) {
+    
+    // Create MVC components
+    DefaultTableModel tableModel = new DefaultTableModel(); // Create a DefaultTableModel instance to manage table data.
+    tableModel.addColumn("Serial"); // Add a column named "Serial" to the table model.
+    tableModel.addColumn("Amount"); // Add a column named "Amount" to the table model.
+    tableModel.addColumn("Category"); // Add a column named "Category" to the table model.
+    tableModel.addColumn("Date"); // Add a column named "Date" to the table model.
+    
+    InputValidation input_valid = new InputValidation(); // Create an InputValidation instance.
 
-  // Constructor for the ExpenseTrackerView class
-  public ExpenseTrackerView(DefaultTableModel model) {
-    // Set the title of the JFrame
-    setTitle("Expense Tracker");
-    // Set the initial size of the JFrame
-    setSize(600, 400);
-    this.model = model;
+    // initiating expense tracker object
+    ExpenseTrackerView view = new ExpenseTrackerView(tableModel); // Create an ExpenseTrackerView instance with the table model.
 
-    // Created a "Add Transaction" button
-    addTransactionBtn = new JButton("Add Transaction");
+    // Initialize view
+    view.setVisible(true); // Set the view to be visible.
 
-    // Created UI components for amount and category input
-    JLabel amountLabel = new JLabel("Amount:");
-    amountField = new JTextField(10);
+    // Handle add transaction button clicks
+    view.getAddTransactionBtn().addActionListener(e -> {
+      
+      // Get transaction data from view
+      double amount = view.getAmountField(); // Get the transaction amount from the view.
+      String category = view.getCategoryField(); // Get the transaction category from the view.
 
-    JLabel categoryLabel = new JLabel("Category:");
-    categoryField = new JTextField(10);
+      input_valid.intake_verify(amount, category); // Validate the input data.
 
-    // Created a JTable for displaying transactions using the provided model
+      // Create transaction object
+      Transaction t = new Transaction(amount, category); // Create a Transaction object with the provided amount and category.
 
-    transactionsTable = new JTable(model);
+      // Call controller to add transaction
+      view.addTransaction(t); // Add the transaction to the view.
+    });
 
-    // Created panels for organizing UI components
-    JPanel inputPanel = new JPanel();
-    inputPanel.add(amountLabel);
-    inputPanel.add(amountField);
-    inputPanel.add(categoryLabel);
-    inputPanel.add(categoryField);
-    inputPanel.add(addTransactionBtn);
-
-    JPanel buttonPanel = new JPanel();
-    buttonPanel.add(addTransactionBtn);
-
-    // Add panels to the frame using BorderLayout
-    add(inputPanel, BorderLayout.NORTH);
-    add(new JScrollPane(transactionsTable), BorderLayout.CENTER);
-    add(buttonPanel, BorderLayout.SOUTH);
-
-    // Set frame properties
-    setSize(400, 300); // Repeated size setting, consider removing one
-    setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-    setVisible(true);
   }
 
-  // Getter method for the transactions table
-  public JTable getTransactionsTable() {
-    return transactionsTable;
-  }
-
-  // Getter method for retrieving the amount from the amount field
-  public double getAmountField() {
-    if (amountField.getText().isEmpty()) {
-      return 0;
-    } else {
-      double amount = Double.parseDouble(amountField.getText());
-      return amount;
-    }
-  }
-
-  // Setter method for the amount field
-  public void setAmountField(JTextField amountField) {
-    this.amountField = amountField;
-  }
-
-  // Getter method for retrieving the category from the category field
-  public String getCategoryField() {
-    return categoryField.getText();
-  }
-
-  // Setter method for the category field
-  public void setCategoryField(JTextField categoryField) {
-    this.categoryField = categoryField;
-  }
-
-  // Getter method for the "Add Transaction" button
-  public JButton getAddTransactionBtn() {
-    return addTransactionBtn;
-  }
-
-  // Getter method for the table model
-  public DefaultTableModel getTableModel() {
-    return model;
-  }
-
-  // Method to refresh the table with a list of transactions
-  public void refreshTable(List<Transaction> transactions) {
-    model.setRowCount(0);
-    int rowNum = model.getRowCount();
-    double totalCost = 0;
-
-    // Calculate the total cost of transactions
-    for (Transaction t : transactions) {
-      totalCost += t.getAmount();
-    }
-
-    // Add rows from the transactions list to the table
-    for (Transaction t : transactions) {
-      model.addRow(new Object[]{rowNum += 1, t.getAmount(), t.getCategory(), t.getTimestamp()});
-    }
-
-    // Create a row for the total cost
-    Object[] totalRow = {"Total", null, null, totalCost};
-    model.addRow(totalRow);
-
-    // Update the table UI
-    transactionsTable.updateUI();
-  }
-
-  // Method to refresh the view with transactions from the model
-  public void refresh() {
-    // Get transactions from the model
-    List<Transaction> transactions = getTransactions();
-
-    // Pass transactions to the view for refreshing the table
-    refreshTable(transactions);
-  }
-
-  // Getter method for retrieving the list of transactions
-  public List<Transaction> getTransactions() {
-    return transactions;
-  }
-
-  // Method to add a transaction to the list and update the table
-  public void addTransaction(Transaction t) {
-    transactions.add(t);
-    getTableModel().addRow(new Object[]{t.getAmount(), t.getCategory(), t.getTimestamp()});
-    refresh(); // Refresh the view
-  }
-
-  // Method for clearing input fields (empty method body)
-  public void clearInputFields() {
-    // Method body is empty
-  }
-
-  // Other view methods (not implemented in the provided code)
 }
