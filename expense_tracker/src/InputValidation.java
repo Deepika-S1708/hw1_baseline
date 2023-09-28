@@ -9,8 +9,7 @@ import java.util.List;
 import javax.swing.JOptionPane;
 
 public class InputValidation {
-    public InputValidation() {
-    }
+
 
     public void intake_verify(double amount, String category) {
         if (amount < 0.0 | amount > 1000.0) {
@@ -19,8 +18,8 @@ public class InputValidation {
         } else {
             List<String> valid_list_of_items = Arrays.asList("food", "travel", "bills", "entertainment", "other");
             if (!valid_list_of_items.contains(category)) {
-                JOptionPane.showMessageDialog((Component)null, "Error! The category must be from \"food\", \"travel\", \"bills\", \"entertainment\",\"other\"");
-                throw new IllegalArgumentException("Error! The category must be from \"food\",\"travel\", \"bills\", \"entertainment\",\"other\"");
+                JOptionPane.showMessageDialog((Component)null, "Error! The category must be from this list \"food\", \"travel\", \"bills\", \"entertainment\",\"other\"");
+                throw new IllegalArgumentException("Error! The category must be from this list \"food\",\"travel\", \"bills\", \"entertainment\", and \"other\"");
             }
         }
     }

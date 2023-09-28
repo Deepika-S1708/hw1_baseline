@@ -16,7 +16,7 @@ public class ExpenseTrackerView extends JFrame {
   private DefaultTableModel model;
   private List<Transaction> transactions = new ArrayList<>();
 
-  
+  InputValidation input_valid = new InputValidation();
 
   public JTable getTransactionsTable() {
     return transactionsTable;
